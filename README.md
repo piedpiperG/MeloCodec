@@ -1,8 +1,27 @@
 # MeloCodec
 
+<p align="center">
+  <a href="https://piedpiperg.github.io/MeloCodec/">
+    <img alt="Project page" src="https://img.shields.io/badge/Project-Page-2f5f9f?style=for-the-badge" />
+  </a>
+  <a href="https://github.com/piedpiperG/MeloCodec/tree/main/melocodec">
+    <img alt="Source code" src="https://img.shields.io/badge/Source-Code-3f7d43?style=for-the-badge" />
+  </a>
+</p>
+
 MeloCodec is a neural audio codec for singing voice representation. It uses
 discrete melodic priors to improve pitch consistency and low-bitrate
 reconstruction quality.
+
+In the code implementation, the architecture is named **BWC**, short for
+**Bandwidth-efficient With Chroma**. `MeloCodec` is provided as an alias so the
+paper name and code name both work:
+
+```python
+from melocodec import BWC, MeloCodec
+
+assert MeloCodec is BWC
+```
 
 ## Project Page
 
@@ -24,23 +43,42 @@ python -m http.server 8088
 
 Then open `http://localhost:8088/`.
 
-## Repository Status
+## Code Layout
 
-This repository currently contains the project page and demo assets. The core
-model architecture code will be prepared separately before release.
+- `melocodec/bwc.py`: BWC / MeloCodec tokenize-then-fuse architecture.
+- `melocodec/chroma.py`: ChromaCodec melody tokenizer.
+- `melocodec/quantize.py`: residual vector quantization modules.
+- `melocodec/layers.py`: DAC-style encoder, decoder, residual blocks, and Snake activation.
+- `examples/minimal_forward.py`: small random-input forward example.
+- `tests/test_architecture.py`: smoke test for the public architecture.
+
+This release intentionally excludes internal training data paths, checkpoints,
+large experiment logs, private evaluation pipelines, and the pitch-shifting
+implementation.
+
+## Quick Start
+
+```bash
+pip install -e .
+python examples/minimal_forward.py
+```
+
+The example constructs a small BWC model, runs one waveform through the
+architecture, and prints reconstructed audio and code tensor shapes.
 
 ## Minimal Fusion Sketch
 
-The core idea of MeloCodec is intentionally simple: learn a discrete melody
-tokenizer first, freeze the stable melody encoder and codebook, then fuse the
-quantized melody prior with the acoustic codec latent before the final RVQ.
+The core idea of BWC / MeloCodec is intentionally simple: learn a discrete
+melody tokenizer first, freeze the stable melody encoder and codebook, then
+fuse the quantized melody prior with the acoustic codec latent before the final
+RVQ.
 
 ```python
 import torch
 from torch import nn
 
 
-class MeloCodec(nn.Module):
+class BWC(nn.Module):
     def __init__(
         self,
         acoustic_encoder: nn.Module,
@@ -119,10 +157,12 @@ class MeloCodec(nn.Module):
             "vq_commitment_loss": encoded["commitment_loss"],
             "vq_codebook_loss": encoded["codebook_loss"],
         }
+
+MeloCodec = BWC
 ```
 
 In Stage 1, `melody_codec` learns to reconstruct chromagrams through a discrete
-bottleneck. In Stage 2, MeloCodec freezes the melody encoder and melody
-quantizer, fuses their quantized output with the acoustic latent, and trains the
-unified codec with waveform, spectral, adversarial, VQ, and chroma
-reconstruction losses.
+bottleneck. In Stage 2, BWC freezes the melody encoder and melody quantizer,
+fuses their quantized output with the acoustic latent, and trains the unified
+codec with waveform, spectral, adversarial, VQ, and chroma reconstruction
+losses.
