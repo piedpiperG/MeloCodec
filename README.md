@@ -13,6 +13,14 @@ MeloCodec is a neural audio codec for singing voice representation. It uses
 discrete melodic priors to improve pitch consistency and low-bitrate
 reconstruction quality.
 
+<p align="center">
+  <img
+    src="docs/assets/architecture.png"
+    alt="MeloCodec tokenize-then-fuse architecture"
+    width="900"
+  />
+</p>
+
 In the code implementation, the architecture is named **BWC**, short for
 **Bandwidth-efficient With Chroma**. `MeloCodec` is provided as an alias so the
 paper name and code name both work:
