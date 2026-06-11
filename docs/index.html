@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MeloCodec: Melodic Priors for Singing Voice Representation</title>
+    <meta
+      name="description"
+      content="Project page for MeloCodec, a neural audio codec that integrates discrete melodic priors for high-fidelity singing voice representation."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav-shell" aria-label="Primary navigation">
+        <a class="brand" href="#top" aria-label="MeloCodec home">MeloCodec</a>
+        <div class="nav-links">
+          <a href="#architecture">Architecture</a>
+          <a href="#audio">Audio Cases</a>
+          <a href="#metrics">Metrics</a>
+          <a href="paper/melocodec_camera_v0.pdf">Paper</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="intro-band">
+        <div class="intro-copy">
+          <p class="eyebrow">Neural audio codec for singing voice</p>
+          <h1>Harnessing melodic priors for high-fidelity singing voice representation</h1>
+          <p class="intro-text">
+            MeloCodec uses a tokenize-then-fuse strategy: a discrete melodic branch locks in
+            chromagram structure before fusion with acoustic latents, improving pitch stability
+            under tight bandwidth.
+          </p>
+          <div class="actions" aria-label="Project links">
+            <a class="primary-link" href="#audio">Audio cases</a>
+            <a class="secondary-link" href="paper/melocodec_camera_v0.pdf">Paper PDF</a>
+          </div>
+        </div>
+        <div class="metric-strip" aria-label="Key reported results">
+          <div>
+            <span>1.5 kbps</span>
+            <strong>Low bitrate</strong>
+          </div>
+          <div>
+            <span>1.64</span>
+            <strong>F0-RMSE</strong>
+          </div>
+          <div>
+            <span>0.95</span>
+            <strong>Chroma-Sim</strong>
+          </div>
+        </div>
+      </section>
+
+      <section id="architecture" class="section-band architecture-band">
+        <div class="section-heading">
+          <p class="eyebrow">Method overview</p>
+          <h2>Tokenize first, then fuse</h2>
+        </div>
+        <figure class="architecture-figure">
+          <img
+            src="assets/architecture.png"
+            alt="MeloCodec architecture with tokenize branch, fuse branch, residual vector quantizers, melody decoder, and acoustic decoder."
+          />
+          <figcaption>
+            The tokenize branch learns quantized melody tokens from chromagrams. The fuse branch
+            combines these tokens with acoustic features and reconstructs waveform audio.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section id="audio" class="section-band audio-band">
+        <div class="section-heading">
+          <p class="eyebrow">Listening samples</p>
+          <h2>Codec reconstruction cases</h2>
+        </div>
+        <div class="control-row" aria-label="Audio case controls">
+          <div id="sample-tabs" class="sample-tabs" role="tablist" aria-label="Samples"></div>
+          <div class="rate-toggle" role="group" aria-label="Bitrate">
+            <button type="button" class="rate-button is-active" data-rate="low">Low</button>
+            <button type="button" class="rate-button" data-rate="high">High</button>
+          </div>
+        </div>
+        <div id="comparison-grid" class="comparison-grid" aria-live="polite"></div>
+      </section>
+
+      <section id="pitch" class="section-band pitch-band">
+        <div class="section-heading">
+          <p class="eyebrow">Melody control</p>
+          <h2>Pitch-control audio cases</h2>
+        </div>
+        <div id="pitch-grid" class="pitch-grid"></div>
+      </section>
+
+      <section id="metrics" class="section-band metrics-band">
+        <div class="section-heading">
+          <p class="eyebrow">Reported evaluation</p>
+          <h2>OpenCpop reconstruction results</h2>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Bitrate</th>
+                <th>ViSQOL</th>
+                <th>STOI</th>
+                <th>F0-RMSE</th>
+                <th>Chroma-Sim</th>
+                <th>SPK-SIM</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="ours">
+                <td>MeloCodec</td>
+                <td>6.0 kbps</td>
+                <td>4.08</td>
+                <td>0.85</td>
+                <td>0.96</td>
+                <td>0.97</td>
+                <td>0.99</td>
+              </tr>
+              <tr>
+                <td>DAC</td>
+                <td>6.0 kbps</td>
+                <td>3.97</td>
+                <td>0.83</td>
+                <td>1.23</td>
+                <td>0.96</td>
+                <td>0.98</td>
+              </tr>
+              <tr>
+                <td>Encodec</td>
+                <td>6.0 kbps</td>
+                <td>3.92</td>
+                <td>0.82</td>
+                <td>1.92</td>
+                <td>0.93</td>
+                <td>0.97</td>
+              </tr>
+              <tr class="ours">
+                <td>MeloCodec</td>
+                <td>1.5 kbps</td>
+                <td>3.38</td>
+                <td>0.78</td>
+                <td>1.64</td>
+                <td>0.95</td>
+                <td>0.94</td>
+              </tr>
+              <tr>
+                <td>DAC</td>
+                <td>1.5 kbps</td>
+                <td>3.05</td>
+                <td>0.71</td>
+                <td>4.12</td>
+                <td>0.84</td>
+                <td>0.91</td>
+              </tr>
+              <tr>
+                <td>X-Codec</td>
+                <td>1.5 kbps</td>
+                <td>2.74</td>
+                <td>0.66</td>
+                <td>4.68</td>
+                <td>0.83</td>
+                <td>0.87</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>MeloCodec</span>
+      <a href="https://github.com/piedpiperG/MeloCodec">GitHub repository</a>
+    </footer>
+
+    <script src="scripts.js"></script>
+  </body>
+</html>
