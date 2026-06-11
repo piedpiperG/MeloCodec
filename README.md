@@ -13,6 +13,10 @@ MeloCodec is a neural audio codec for singing voice representation. It uses
 discrete melodic priors to improve pitch consistency and low-bitrate
 reconstruction quality.
 
+This repository is the official implementation of the paper
+**"MeloCodec: Harnessing Melodic Priors for High-Fidelity Singing Voice
+Representation"**, accepted by **ICME 2026**.
+
 <p align="center">
   <img
     src="docs/assets/architecture.png"
